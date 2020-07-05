@@ -1,0 +1,72 @@
+<html>
+<header>
+    <title>Calculadora de IR</title>
+</header>
+
+<body>
+
+    <label style="width: 100%; display: block;">Rendimentos tributáveis mensal</label>
+    <input type="number" id="rendimentos" style="padding: 5px;">
+    <button onclick="execute()">CALCULAR</button>
+
+
+    <script>
+
+        // function Carro(modelo, fabricante, cor) {
+        //     this.modelo = modelo;
+        //     this.fabricante = fabricante;
+        //     this.cor = cor;
+        // }
+
+        // function execute() {
+        //     window.carro1 = new Carro('monza', 'chevrolet', 'preto');
+        //     window.carro2 = new Carro('ka', 'ford', 'azul');
+        // }
+
+        function execute() {
+            let rendimentosInput = document.getElementById('rendimentos');
+            if (rendimentosInput == null) return;
+            let rendimentoMensal = Number(rendimentosInput.value);
+            let aliquota = getFaixaAliquota(rendimentoMensal);
+            console.log(aliquota);
+            // let rendimentoAnual = getRendimentoAnual(rendimentoMensal);
+
+        }
+
+        function getRendimentoAnual(rendimentoMensal) {
+            return rendimentoMensal * 12;
+        }
+
+        function ConfiguracaoAliquota(valorInicial, valorFinal, aliquota) {
+            this.valorInicial = valorInicial;
+            this.valorFinal = valorFinal;
+            this.aliquota = aliquota;
+        }
+
+        function getFaixaAliquota(rendimentoMensal) { 
+            let configuracao = [
+                new ConfiguracaoAliquota(-1, 1900, 0),
+                new ConfiguracaoAliquota(1900, 2300, 7.5),
+                new ConfiguracaoAliquota(2300, 3600, 15),
+                new ConfiguracaoAliquota(3600, 4500, 22.5),
+                new ConfiguracaoAliquota(4500, null, 27)
+            ];
+
+            let configuracaoSelectionada = configuracao[0]; 
+
+            for(let i = 0; i < configuracao.length; i++) {
+                let item = configuracao[i];
+                
+                if(rendimentoMensal > item.valorInicial 
+                && (item.valorFinal == null || rendimentoMensal <= item.valorFinal)){
+                    configuracaoSelectionada = item;
+                }
+            }
+
+            return configuracaoSelectionada.aliquota;
+
+        }
+    </script>
+</body>
+
+</html>
